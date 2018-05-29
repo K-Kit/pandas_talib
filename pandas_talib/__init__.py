@@ -410,8 +410,9 @@ def CCI(df, n):
     """
     Commodity Channel Index
     """
+    CCI_constant = 0.015
     PP = (df['High'] + df['Low'] + df['Close']) / 3
-    result = pd.Series((PP - PP.rolling(n).mean()) / PP.rolling(n).std(), name='CCI_' + str(n))
+    result = pd.Series((PP - PP.rolling(n).mean()) / (CCI_constant * np.mean(np.absolute(PP - np.mean(PP)))), name='CCI_' + str(n))
     return out(SETTINGS, df, result)
 
 
