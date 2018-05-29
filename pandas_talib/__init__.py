@@ -311,7 +311,7 @@ def RSI(df, n):
     DoI = pd.Series(DoI)
     PosDI = pd.Series(UpI.ewm(span=n, min_periods=n - 1).mean())
     NegDI = pd.Series(DoI.ewm(span=n, min_periods=n - 1).mean())
-    result = pd.Series(PosDI / (PosDI + NegDI), name='RSI_' + str(n))
+    result = pd.Series(100*(PosDI / (PosDI + NegDI)), name='RSI_' + str(n))
     return out(SETTINGS, df, result)
 
 
