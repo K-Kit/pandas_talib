@@ -314,6 +314,33 @@ def RSI(df, n):
     result = pd.Series(100*(PosDI / (PosDI + NegDI)), name='RSI_' + str(n))
     return out(SETTINGS, df, result)
 
+def CMO(df, n):
+    """
+    Chande Momentum Oscillator
+    """
+    i = 0
+    UpI = [0]
+    DoI = [0]
+    while i + 1 <= len(df) - 1:  # df.index[-1]
+        UpMove = df.iat[i + 1, df.columns.get_loc('High')] - df.iat[i, df.columns.get_loc('High')]
+        DoMove = df.iat[i, df.columns.get_loc('Low')] - df.iat[i + 1, df.columns.get_loc('Low')]
+        if UpMove > DoMove and UpMove > 0:
+            UpD = UpMove
+        else:
+            UpD = 0
+        UpI.append(UpD)
+        if DoMove > UpMove and DoMove > 0:
+            DoD = DoMove
+        else:
+            DoD = 0
+        DoI.append(DoD)
+        i = i + 1
+    UpI = pd.Series(UpI)
+    DoI = pd.Series(DoI)
+    PosDI = pd.Series(UpI.ewm(span=n, min_periods=n - 1).mean())
+    NegDI = pd.Series(DoI.ewm(span=n, min_periods=n - 1).mean())
+    result = pd.Series(100*((PosDI - NegDI) / (PosDI + NegDI)), name='CMO_' + str(n))
+    return out(SETTINGS, df, result)
 
 def TSI(df, r, s):
     """
